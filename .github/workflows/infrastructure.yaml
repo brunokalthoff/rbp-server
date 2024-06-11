@@ -22,22 +22,10 @@ jobs:
           aws-region: ${{ vars.AWS_TARGET_REGION }}
           role-session-name: 'GitHubActions-DeployLayerStack'
 
-      - name: Try if cd persists over steps
-        run: |
-          pwd
-          cd infrastructure
-          pwd
-
-      - name: Try 2
-        run: |
-          pwd
-          cd aws-cdk-fargate
-          pwd
-
       - name: Deploy LambdaStack (via CDK)
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'deploy'
           cdk_stack: 'LambdaStack'
-          cdk_args: '--require-approval never' # This is a toy example, so we don't need to approve changes
+          cdk_args: '--app "npx ts-node --prefer-ts-exts infrastructure/aws-cdk-fargate/bin/aws-cdk-fargate.ts" --require-approval never' # This is a toy example, so we don't need to approve changes
           actions_comment: false
