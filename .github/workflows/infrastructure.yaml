@@ -22,6 +22,9 @@ jobs:
           aws-region: ${{ vars.AWS_TARGET_REGION }}
           role-session-name: 'GitHubActions-DeployLayerStack'
 
+      - name: Change to CDK directory
+        run: cd infrastructure/aws-cdk-fargate/
+
       - name: Deploy LambdaStack (via CDK)
         uses: youyo/aws-cdk-github-actions@v2
         with:
