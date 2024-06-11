@@ -25,7 +25,6 @@ jobs:
       - name: Deploy LambdaStack (via CDK)
         uses: youyo/aws-cdk-github-actions@v2
         with:
-          run: cd infrastructure/aws-cdk-fargate/
           cdk_subcommand: 'deploy'
           cdk_stack: 'LambdaStack'
           cdk_args: '--require-approval never' # This is a toy example, so we don't need to approve changes
