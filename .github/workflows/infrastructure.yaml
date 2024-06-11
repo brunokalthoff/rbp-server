@@ -23,6 +23,9 @@ jobs:
           role-session-name: 'GitHubActions-DeployLayerStack'
 
       - name: Deploy LambdaStack (via CDK)
-        run: |
-          cd infrastructure/aws-cdk-fargate && \
-          npx cdk deploy LambdaStack --require-approval never
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'deploy'
+          cdk_stack: 'LambdaStack'
+          cdk_args: '--app "npx ts-node --prefer-ts-exts bin/aws-cdk-fargate.ts" --require-approval never' # This is a toy example, so we don't need to approve changes
+          actions_comment: false
