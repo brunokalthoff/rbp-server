@@ -1,13 +1,13 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:7",
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-td:2",
   "containerDefinitions": [
     {
       "name": "rbp-app",
-      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo:ce9b58f548d7946b7a3ca975fa00ffd2754492cb",
+      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app",
       "cpu": 0,
       "portMappings": [
         {
-          "name": "rpb-app-3000-tcp",
+          "name": "rbp-app-3000-tcp",
           "containerPort": 3000,
           "hostPort": 3000,
           "protocol": "tcp",
@@ -16,25 +16,28 @@
       ],
       "essential": true,
       "environment": [],
+      "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
+      "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/rbp-app-task-definition",
+          "awslogs-group": "/ecs/rbp-app-td",
           "awslogs-create-group": "true",
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
-        }
+        },
+        "secretOptions": []
       },
       "systemControls": []
     }
   ],
-  "family": "rbp-app-task-definition",
+  "family": "rbp-app-td",
   "taskRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 7,
+  "revision": 2,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -75,7 +78,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-06-15T16:59:29.473Z",
-  "registeredBy": "arn:aws:sts::058264245122:assumed-role/TrustStack-EcrEcsDeploymentRole443C6ECE-ZYx7HKPNqZlx/GitHubActions-DeployApp",
+  "registeredAt": "2024-06-15T17:22:19.035Z",
+  "registeredBy": "arn:aws:iam::058264245122:user/brunbrun",
   "tags": []
 }
