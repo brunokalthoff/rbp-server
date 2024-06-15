@@ -2,57 +2,41 @@ name: Deploy to Amazon ECS
 
 on:
   push:
-    branches: ['main', 'feat/infrastructure']
+    branches: ['main', 'wf']
 
 env:
   AWS_REGION: eu-central-1 # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: rpb-app # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: rbp-app # set this to your Amazon ECR repository name
   ECS_SERVICE: rbp-app-service # set this to your Amazon ECS service name
   ECS_CLUSTER: RbpAppCluster # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION:
     infrastructure/rbp-app-task-definition.json # set this to the path to your Amazon ECS task definition
     # file, e.g. .aws/task-definition.json
   CONTAINER_NAME:
-    rpb-app # set this to the name of the container in the
+    rbp-app # set this to the name of the container in the
     # containerDefinitions section of your task definition
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
-  deploy:
-    name: Deploy
+  deploy-app:
     runs-on: ubuntu-latest
-    environment: production
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ env.AWS_REGION }}
-
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Assume IAM Role for AWS Actions
-        id: assume-role
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-          role-session-name: 'GitHubActions-DeployToECS'
+          role-to-assume: ${{ vars.AWS_DEPLOY_APP_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: 'GitHubActions-DeployApp'
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          aws-credentials: ${{ steps.assume-role.outputs.credentials }}
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image

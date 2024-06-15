@@ -1,84 +1,82 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:2",
-    "containerDefinitions": [
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:6",
+  "containerDefinitions": [
+    {
+      "name": "rpb-app",
+      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo",
+      "cpu": 0,
+      "portMappings": [
         {
-            "name": "rpb-app",
-            "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rpb-app",
-            "cpu": 0,
-            "portMappings": [
-                {
-                    "containerPort": 3000,
-                    "hostPort": 3000,
-                    "protocol": "tcp",
-                    "name": "rpb-app-3000-tcp",
-                    "appProtocol": "http"
-                }
-            ],
-            "essential": true,
-            "environment": [],
-            "environmentFiles": [],
-            "mountPoints": [],
-            "volumesFrom": [],
-            "ulimits": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/rbp-app-task-definition",
-                    "awslogs-create-group": "true",
-                    "awslogs-region": "eu-central-1",
-                    "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
-            },
-            "systemControls": []
+          "name": "rpb-app-3000-tcp",
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp",
+          "appProtocol": "http"
         }
-    ],
-    "family": "rbp-app-task-definition",
-    "executionRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
-    "revision": 2,
-    "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/rbp-app-task-definition",
+          "awslogs-create-group": "true",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
         },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
-        }
-    ],
-    "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
+        "secretOptions": []
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "rbp-app-task-definition",
+  "taskRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 6,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
     },
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "1024",
-    "memory": "3072",
-    "registeredAt": "2024-06-10T15:33:08.010000+02:00",
-    "registeredBy": "arn:aws:iam::058264245122:root"
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2024-06-15T15:13:12.004Z",
+  "registeredBy": "arn:aws:iam::058264245122:user/brunbrun",
+  "tags": []
 }
