@@ -1,9 +1,9 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:6",
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:7",
   "containerDefinitions": [
     {
       "name": "rbp-app",
-      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo",
+      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo:ce9b58f548d7946b7a3ca975fa00ffd2754492cb",
       "cpu": 0,
       "portMappings": [
         {
@@ -25,8 +25,7 @@
           "awslogs-create-group": "true",
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
-        },
-        "secretOptions": []
+        }
       },
       "systemControls": []
     }
@@ -35,7 +34,7 @@
   "taskRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 6,
+  "revision": 7,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -76,7 +75,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-06-15T15:13:12.004Z",
-  "registeredBy": "arn:aws:iam::058264245122:user/brunbrun",
+  "registeredAt": "2024-06-15T16:59:29.473Z",
+  "registeredBy": "arn:aws:sts::058264245122:assumed-role/TrustStack-EcrEcsDeploymentRole443C6ECE-ZYx7HKPNqZlx/GitHubActions-DeployApp",
   "tags": []
 }
