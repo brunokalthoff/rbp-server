@@ -2,7 +2,7 @@
   "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-definition:6",
   "containerDefinitions": [
     {
-      "name": "rpb-app",
+      "name": "rbp-app",
       "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo",
       "cpu": 0,
       "portMappings": [

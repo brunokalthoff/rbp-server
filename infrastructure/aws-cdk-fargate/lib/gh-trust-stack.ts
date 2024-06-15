@@ -63,14 +63,6 @@ export class TrustStack extends cdk.Stack {
       assumedBy: githubPrinciple,
     });
 
-    // const ecrEcsPassRolePolicy = new iam.PolicyStatement({
-    //   effect: iam.Effect.ALLOW,
-    //   actions: ['iam:PassRole'],
-    //   resources: [
-    //     'arn:aws:iam::*:role/FargateTaskDefinitionStack-TaskDefTaskRole1EDB4A67-lUZtepFoCqOi',
-    //   ],
-    // });
-
     const assumeEcrEcsDeploymentRoles = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['sts:AssumeRole'],
