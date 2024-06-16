@@ -5,9 +5,8 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
-import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
 
-export class AwsCdkFargateStack extends cdk.Stack {
+export class AwsFargateStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -15,9 +14,8 @@ export class AwsCdkFargateStack extends cdk.Stack {
       maxAzs: 3,
     });
 
-    const loadbalancer = new elbv2.ApplicationLoadBalancer(this, 'RbpAppLb', {
-      vpc,
-      internetFacing: true,
+    const ecrRepo = new ecr.Repository(this, 'RbpEcrRepo', {
+      repositoryName: 'rbp-app-repo',
     });
 
     const cluster = new ecs.Cluster(this, 'RbpAppCluster', {
@@ -25,11 +23,9 @@ export class AwsCdkFargateStack extends cdk.Stack {
       clusterName: 'rbp-app-cluster',
     });
 
-    new ecr.Repository(this, 'RbpEcrRepo', {
-      repositoryName: 'rbp-app-repo',
-    });
+    // Task Definition
 
-    const executionRole = new iam.Role(this, 'ExecutionRole', {
+    const taskExecutionRole = new iam.Role(this, 'TaskExecutionRole', {
       assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName(
@@ -38,23 +34,95 @@ export class AwsCdkFargateStack extends cdk.Stack {
       ],
     });
 
-    new ecs_patterns.ApplicationLoadBalancedFargateService(
+    const taskDefinition = new ecs.FargateTaskDefinition(
       this,
-      'RbpAppService',
+      'RbpAppTaskDef',
       {
-        cluster,
-        taskImageOptions: {
-          image: ecs.ContainerImage.fromRegistry('amazon/amazon-ecs-sample'),
-          containerName: 'rbp-app',
-          containerPort: 3000,
-          executionRole,
-        },
-        cpu: 256,
-        memoryLimitMiB: 512,
-        desiredCount: 1,
-        serviceName: 'rbp-app-service',
-        loadBalancer: loadbalancer,
+        family: 'rbp-app-task-def',
+        taskRole: taskExecutionRole,
       },
     );
+
+    taskDefinition.addContainer('RbpAppContainer', {
+      image: ecs.ContainerImage.fromEcrRepository(ecrRepo),
+      containerName: 'rbp-app',
+      portMappings: [
+        {
+          protocol: ecs.Protocol.TCP,
+          appProtocol: ecs.AppProtocol.http,
+          containerPort: 3000,
+          name: 'rbp-app-port-mapping',
+        },
+      ],
+      logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'rbp-app' }),
+      healthCheck: {
+        command: ['CMD-SHELL', 'curl -f http://localhost:3000/ || exit 1'],
+        interval: cdk.Duration.seconds(120),
+        timeout: cdk.Duration.seconds(5),
+        retries: 3,
+        startPeriod: cdk.Duration.seconds(10),
+      },
+    });
+
+    // Service
+
+    const httpInboundSecurityGroup = new ec2.SecurityGroup(
+      this,
+      'RbpAppServiceSG',
+      {
+        vpc,
+        // allowAllOutbound: true,
+        securityGroupName: 'rbp-app-service-sg',
+      },
+    );
+
+    const loadbalancer = new elbv2.ApplicationLoadBalancer(this, 'RbpAppLb', {
+      vpc,
+      internetFacing: true,
+    });
+
+    const listener = loadbalancer.addListener('RbpAppListener', {
+      port: 80,
+      open: true,
+    });
+
+    const service = new ecs.FargateService(this, 'RbpAppService', {
+      serviceName: 'rbp-app-service',
+      cluster,
+      taskDefinition,
+      desiredCount: 1,
+      circuitBreaker: { enable: true, rollback: true },
+      deploymentController: { type: ecs.DeploymentControllerType.ECS },
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      securityGroups: [httpInboundSecurityGroup],
+      assignPublicIp: true,
+    });
+
+    const targetGroup = listener.addTargets('RbpAppTargetGroup', {
+      port: 80,
+      targets: [service],
+      targetGroupName: 'rbp-app-tg',
+      protocol: elbv2.ApplicationProtocol.HTTP,
+      deregistrationDelay: cdk.Duration.seconds(300),
+    });
+
+    targetGroup.configureHealthCheck({
+      protocol: elbv2.Protocol.HTTP,
+      path: '/',
+      interval: cdk.Duration.seconds(120),
+    });
+
+    // Service Auto Scaling
+    const scaling = service.autoScaleTaskCount({
+      minCapacity: 1,
+      maxCapacity: 3,
+    });
+
+    scaling.scaleOnCpuUtilization('CpuScaling', {
+      targetUtilizationPercent: 70,
+      // Time between scaling operations
+      scaleInCooldown: cdk.Duration.seconds(300),
+      scaleOutCooldown: cdk.Duration.seconds(300),
+    });
   }
 }

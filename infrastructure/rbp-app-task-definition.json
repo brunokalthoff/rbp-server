@@ -1,12 +1,14 @@
 {
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-def:1",
   "containerDefinitions": [
     {
       "name": "rbp-app",
-      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app",
+      "image": "058264245122.dkr.ecr.eu-central-1.amazonaws.com/rbp-app-repo:latest",
       "cpu": 0,
+      "links": [],
       "portMappings": [
         {
-          "name": "rbp-app-3000-tcp",
+          "name": "rbp-app-port-mapping",
           "containerPort": 3000,
           "hostPort": 3000,
           "protocol": "tcp",
@@ -14,37 +16,87 @@
         }
       ],
       "essential": true,
+      "entryPoint": [],
+      "command": [],
       "environment": [],
       "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
+      "secrets": [],
+      "dnsServers": [],
+      "dnsSearchDomains": [],
+      "extraHosts": [],
+      "dockerSecurityOptions": [],
+      "dockerLabels": {},
       "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/rbp-app-td",
-          "awslogs-create-group": "true",
+          "awslogs-group": "AwsFargateStack-RbpAppTaskDefRbpAppContainerLogGroupA3FB8EF7-ZeoZQ0SYJu1I",
           "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "ecs"
+          "awslogs-stream-prefix": "rbp-app"
         },
         "secretOptions": []
       },
-      "systemControls": []
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"],
+        "interval": 120,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      },
+      "systemControls": [],
+      "credentialSpecs": []
     }
   ],
-  "family": "rbp-app-td",
-  "taskRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
-  "executionRoleArn": "arn:aws:iam::058264245122:role/ecsTaskExecutionRole",
+  "family": "rbp-app-task-def",
+  "taskRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-TaskExecutionRole250D2532-mMfDNbyKxrsf",
+  "executionRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-RbpAppTaskDefExecutionRole0EAFF208-sDrGyZIcQZX2",
   "networkMode": "awsvpc",
+  "revision": 1,
   "volumes": [],
   "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
   "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "1024",
-  "memory": "3072",
-  "runtimePlatform": {
-    "cpuArchitecture": "X86_64",
-    "operatingSystemFamily": "LINUX"
-  },
+  "cpu": "256",
+  "memory": "512",
+  "registeredAt": "2024-06-16T22:53:33.607Z",
+  "registeredBy": "arn:aws:sts::058264245122:assumed-role/cdk-hnb659fds-cfn-exec-role-058264245122-eu-central-1/AWSCloudFormation",
   "tags": []
 }

@@ -63,14 +63,36 @@ export class TrustStack extends cdk.Stack {
       assumedBy: githubPrinciple,
     });
 
-    const assumeEcrEcsDeploymentRoles = new iam.PolicyStatement({
+    const ecrEcsPassRolePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      actions: ['sts:AssumeRole'],
-      resources: ['arn:aws:iam::*:role/ecsTaskExecutionRole'],
+      actions: ['iam:PassRole'],
+      resources: ['arn:aws:iam::058264245122:role/ecsTaskExecutionRole'],
     });
 
-    ecrEcsDeploymentRole.addToPolicy(assumeEcrEcsDeploymentRoles);
-    // ecrEcsDeploymentRole.addToPolicy(ecrEcsPassRolePolicy);
+    const uploadImagePolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'ecr:GetDownloadUrlForLayer',
+        'ecr:BatchGetImage',
+        'ecr:CompleteLayerUpload',
+        'ecr:GetAuthorizationToken',
+        'ecr:DescribeRepositories',
+        'ecr:UploadLayerPart',
+        'ecr:ListImages',
+        'ecr:InitiateLayerUpload',
+        'ecr:BatchCheckLayerAvailability',
+        'ecr:PutImage',
+        'ecs:UpdateService',
+        'ecs:RegisterTaskDefinition',
+        'ecs:DescribeServices',
+        'ecs:DescribeTaskDefinition',
+        'ecs:DescribeClusters',
+      ],
+      resources: ['*'],
+    });
+
+    ecrEcsDeploymentRole.addToPolicy(ecrEcsPassRolePolicy);
+    ecrEcsDeploymentRole.addToPolicy(uploadImagePolicy);
 
     new cdk.CfnOutput(this, 'EcrEcsDeploymentRoleArn', {
       value: ecrEcsDeploymentRole.roleArn,
