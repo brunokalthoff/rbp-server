@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-def:1",
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:058264245122:task-definition/rbp-app-task-def:3",
   "containerDefinitions": [
     {
       "name": "rbp-app",
@@ -32,7 +32,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "AwsFargateStack-RbpAppTaskDefRbpAppContainerLogGroupA3FB8EF7-ZeoZQ0SYJu1I",
+          "awslogs-group": "AwsFargateStack-RbpAppTaskDefRbpAppContainerLogGroupA3FB8EF7-zowfzPnrMln2",
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "rbp-app"
         },
@@ -50,10 +50,10 @@
     }
   ],
   "family": "rbp-app-task-def",
-  "taskRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-TaskExecutionRole250D2532-mMfDNbyKxrsf",
-  "executionRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-RbpAppTaskDefExecutionRole0EAFF208-sDrGyZIcQZX2",
+  "taskRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-ExecutionRole605A040B-rc8phVqYO2Om",
+  "executionRoleArn": "arn:aws:iam::058264245122:role/AwsFargateStack-RbpAppTaskDefExecutionRole0EAFF208-77zZcxtUYPc3",
   "networkMode": "awsvpc",
-  "revision": 1,
+  "revision": 3,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -96,7 +96,7 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "registeredAt": "2024-06-16T22:53:33.607Z",
+  "registeredAt": "2024-06-16T23:52:50.863Z",
   "registeredBy": "arn:aws:sts::058264245122:assumed-role/cdk-hnb659fds-cfn-exec-role-058264245122-eu-central-1/AWSCloudFormation",
   "tags": []
 }

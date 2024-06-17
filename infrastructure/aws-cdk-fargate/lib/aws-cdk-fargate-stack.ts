@@ -25,7 +25,7 @@ export class AwsFargateStack extends cdk.Stack {
 
     // Task Definition
 
-    const taskExecutionRole = new iam.Role(this, 'TaskExecutionRole', {
+    const executionRole = new iam.Role(this, 'ExecutionRole', {
       assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName(
@@ -39,7 +39,7 @@ export class AwsFargateStack extends cdk.Stack {
       'RbpAppTaskDef',
       {
         family: 'rbp-app-task-def',
-        taskRole: taskExecutionRole,
+        taskRole: executionRole,
       },
     );
 

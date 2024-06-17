@@ -66,7 +66,9 @@ export class TrustStack extends cdk.Stack {
     const ecrEcsPassRolePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['iam:PassRole'],
-      resources: ['arn:aws:iam::058264245122:role/ecsTaskExecutionRole'],
+      resources: [
+        'arn:aws:iam::*:role/AwsFargateStack-RbpAppTaskDefExecutionRole*',
+      ],
     });
 
     const uploadImagePolicy = new iam.PolicyStatement({
