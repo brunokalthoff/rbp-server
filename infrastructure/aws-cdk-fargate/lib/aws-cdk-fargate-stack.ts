@@ -24,8 +24,8 @@ export class AwsFargateStack extends cdk.Stack {
     });
 
     // Task Definition
-
     const executionRole = new iam.Role(this, 'ExecutionRole', {
+      roleName: 'ExecutionRole',
       assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
       managedPolicies: [
         iam.ManagedPolicy.fromAwsManagedPolicyName(
@@ -39,7 +39,7 @@ export class AwsFargateStack extends cdk.Stack {
       'RbpAppTaskDef',
       {
         family: 'rbp-app-task-def',
-        taskRole: executionRole,
+        executionRole: executionRole,
       },
     );
 
@@ -65,15 +65,19 @@ export class AwsFargateStack extends cdk.Stack {
     });
 
     // Service
-
     const httpInboundSecurityGroup = new ec2.SecurityGroup(
       this,
       'RbpAppServiceSG',
       {
         vpc,
-        // allowAllOutbound: true,
         securityGroupName: 'rbp-app-service-sg',
       },
+    );
+
+    httpInboundSecurityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(80),
+      'Allow HTTP traffic from anywhere',
     );
 
     const loadbalancer = new elbv2.ApplicationLoadBalancer(this, 'RbpAppLb', {

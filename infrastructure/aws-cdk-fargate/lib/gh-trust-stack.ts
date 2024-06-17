@@ -32,14 +32,19 @@ export class TrustStack extends cdk.Stack {
     );
 
     // CDK Role
-    const cdkDeploymentRole = new iam.Role(this, 'CdkDeploymentRole', {
-      assumedBy: githubPrinciple,
-    });
+    const gitHubActionsCdkDeployRole = new iam.Role(
+      this,
+      'GitHubActionsCdkDeployRole',
+      {
+        roleName: 'GitHubActionsCdkDeployRole',
+        assumedBy: githubPrinciple,
+      },
+    );
 
     const assumeCdkDeploymentRoles = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['sts:AssumeRole'],
-      resources: ['arn:aws:iam::*:role/cdk-*'],
+      resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
       conditions: {
         StringEquals: {
           'aws:ResourceTag/aws-cdk:bootstrap-role': [
@@ -51,23 +56,29 @@ export class TrustStack extends cdk.Stack {
       },
     });
 
-    cdkDeploymentRole.addToPolicy(assumeCdkDeploymentRoles);
+    gitHubActionsCdkDeployRole.addToPolicy(assumeCdkDeploymentRoles);
 
     new cdk.CfnOutput(this, 'GitHubActionsRoleArn', {
-      value: cdkDeploymentRole.roleArn,
+      value: gitHubActionsCdkDeployRole.roleArn,
       description: 'The role ARN for GitHub Actions to use during deployment.',
     });
 
     // ECR ECS Role
-    const ecrEcsDeploymentRole = new iam.Role(this, 'EcrEcsDeploymentRole', {
-      assumedBy: githubPrinciple,
-    });
+    const gitHubActionsEcrEcsDeployRole = new iam.Role(
+      this,
+      'GitHubActionsEcrEcsDeployRole',
+      {
+        roleName: 'GitHubActionsEcrEcsDeployRole',
+        assumedBy: githubPrinciple,
+      },
+    );
 
-    const ecrEcsPassRolePolicy = new iam.PolicyStatement({
+    const passRolePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['iam:PassRole'],
       resources: [
-        'arn:aws:iam::*:role/AwsFargateStack-RbpAppTaskDefExecutionRole*',
+        `arn:aws:iam::${this.account}:role/*RbpAppTaskDefTaskRole*`,
+        `arn:aws:iam::${this.account}:role/ExecutionRole`,
       ],
     });
 
@@ -93,11 +104,11 @@ export class TrustStack extends cdk.Stack {
       resources: ['*'],
     });
 
-    ecrEcsDeploymentRole.addToPolicy(ecrEcsPassRolePolicy);
-    ecrEcsDeploymentRole.addToPolicy(uploadImagePolicy);
+    gitHubActionsEcrEcsDeployRole.addToPolicy(passRolePolicy);
+    gitHubActionsEcrEcsDeployRole.addToPolicy(uploadImagePolicy);
 
     new cdk.CfnOutput(this, 'EcrEcsDeploymentRoleArn', {
-      value: ecrEcsDeploymentRole.roleArn,
+      value: gitHubActionsEcrEcsDeployRole.roleArn,
       description: 'The role ARN for GitHub Actions to deploy to ECS and ECR.',
     });
   }
