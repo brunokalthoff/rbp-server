@@ -6,16 +6,12 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 
-export class AwsFargateStack extends cdk.Stack {
+export class FargateStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const vpc = new ec2.Vpc(this, 'RbpAppVpc', {
       maxAzs: 3,
-    });
-
-    const ecrRepo = new ecr.Repository(this, 'RbpEcrRepo', {
-      repositoryName: 'rbp-app-repo',
     });
 
     const cluster = new ecs.Cluster(this, 'RbpAppCluster', {
@@ -40,6 +36,16 @@ export class AwsFargateStack extends cdk.Stack {
       {
         family: 'rbp-app-task-def',
         executionRole: executionRole,
+      },
+    );
+
+    const ecrRepoArn = cdk.Fn.importValue('EcrRepositoryArn');
+    const ecrRepo = ecr.Repository.fromRepositoryAttributes(
+      this,
+      'RbpEcrRepo',
+      {
+        repositoryArn: ecrRepoArn,
+        repositoryName: 'rbp-app-repo', // Provide the repository name here
       },
     );
 
