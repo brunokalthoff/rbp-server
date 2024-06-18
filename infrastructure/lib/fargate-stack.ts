@@ -57,7 +57,7 @@ export class FargateStack extends cdk.Stack {
           protocol: ecs.Protocol.TCP,
           appProtocol: ecs.AppProtocol.http,
           containerPort: 3000,
-          name: 'rbp-app-port-mapping',
+          name: 'rbp-app-3000-tcp',
         },
       ],
       logging: ecs.LogDrivers.awsLogs({ streamPrefix: 'rbp-app' }),

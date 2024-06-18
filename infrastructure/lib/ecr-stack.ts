@@ -11,6 +11,7 @@ export class EcrStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'EcrRepositoryArn', {
+      exportName: 'EcrRepositoryArn',
       value: ecrRepo.repositoryArn,
       description: 'ARN of the ECR repository',
     });
